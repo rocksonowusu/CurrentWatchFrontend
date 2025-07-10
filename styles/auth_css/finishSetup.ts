@@ -1,0 +1,135 @@
+import { StyleSheet } from "react-native";
+export const finishSetupStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    safeArea: {
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    backgroundCircles: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+    },
+    circle: {
+      position: 'absolute',
+      borderRadius: 1000,
+    },
+    circle1: {
+      width: 250,
+      height: 250,
+      top: -125,
+      right: -125,
+      backgroundColor: 'rgba(16, 185, 129, 0.06)',
+    },
+    circle2: {
+      width: 180,
+      height: 180,
+      bottom: -90,
+      left: -90,
+      backgroundColor: 'rgba(34, 197, 94, 0.05)',
+    },
+    header: {
+      alignItems: 'flex-end',
+      paddingHorizontal: 20,
+      paddingTop: 10,
+    },
+    stepIndicator: {
+      fontSize: 14,
+      color: '#059669',
+      fontWeight: '700',
+    },
+    content: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 40,
+    },
+    checkmarkContainer: {
+      marginBottom: 30,
+    },
+    checkmarkCircle: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: '#10B981',
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#10B981',
+      shadowOffset: {
+        width: 0,
+        height: 8,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 20,
+      elevation: 10,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '800',
+      color: '#1F2937',
+      textAlign: 'center',
+      marginBottom: 15,
+    },
+    subtitle: {
+      fontSize: 16,
+      color: '#6B7280',
+      textAlign: 'center',
+      lineHeight: 24,
+      marginBottom: 40,
+    },
+    summaryContainer: {
+      width: '100%',
+      backgroundColor: '#FFFFFF',
+      borderRadius: 16,
+      padding: 20,
+      borderWidth: 1,
+      borderColor: '#E5E7EB',
+      gap: 15,
+    },
+    summaryItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+    summaryText: {
+      fontSize: 15,
+      color: '#4B5563',
+    },
+    buttonContainer: {
+      paddingHorizontal: 20,
+      paddingBottom: 30,
+      paddingTop: 15,
+    },
+    continueButton: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#10B981',
+      paddingVertical: 16,
+      borderRadius: 14,
+      gap: 10,
+      shadowColor: '#10B981',
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 12,
+      elevation: 8,
+    },
+    buttonLoading: {
+      opacity: 0.8,
+    },
+    buttonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '700',
+    },
+    loadingContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+  });

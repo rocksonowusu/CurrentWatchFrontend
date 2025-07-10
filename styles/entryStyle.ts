@@ -1,0 +1,136 @@
+import { Dimensions, StyleSheet } from "react-native";
+const { height } = Dimensions.get("window");
+export const entryStyle = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    safeArea: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+    backgroundCircles: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+    },
+    circle: {
+      position: 'absolute',
+      borderRadius: 1000,
+    },
+    circle1: {
+      width: 200,
+      height: 200,
+      top: -100,
+      right: -100,
+      backgroundColor: 'rgba(0, 201, 87, 0.08)',
+    },
+    circle2: {
+      width: 150,
+      height: 150,
+      bottom: -75,
+      left: -75,
+      backgroundColor: 'rgba(16, 185, 129, 0.06)',
+    },
+    circle3: {
+      width: 100,
+      height: 100,
+      top: height * 0.3,
+      left: -50,
+      backgroundColor: 'rgba(34, 197, 94, 0.05)',
+    },
+    content: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      flex: 1,
+    },
+    logoSection: {
+      alignItems: 'center',
+      marginBottom: 30,
+    },
+    logoContainer: {
+      marginBottom: 20,
+    },
+    logoBackground: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: '#FFFFFF',
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#10B981',
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 24,
+      elevation: 15,
+      borderWidth: 1.5,
+      borderColor: 'rgba(16, 185, 129, 0.15)',
+    },
+    appName: {
+      fontSize: 38,
+      fontWeight: '900',
+      color: '#1F2937',
+      letterSpacing: -0.8,
+      textAlign: 'center',
+    },
+    tagline: {
+      fontSize: 20,
+      color: '#059669',
+      marginBottom: 12,
+      textAlign: 'center',
+      fontWeight: '700',
+      letterSpacing: 0.3,
+    },
+    subtitle: {
+      fontSize: 16,
+      color: '#6B7280',
+      marginBottom: 60,
+      textAlign: 'center',
+      paddingHorizontal: 30,
+      lineHeight: 26,
+      fontWeight: '400',
+    },
+    buttonContainer: {
+      marginBottom: 20,
+    },
+    button: {
+      flexDirection: 'row',
+      backgroundColor: '#10B981',
+      paddingHorizontal: 40,
+      paddingVertical: 20,
+      borderRadius: 50,
+      alignItems: 'center',
+      gap: 12,
+      shadowColor: '#10B981',
+      shadowOffset: {
+        width: 0,
+        height: 10,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 20,
+      elevation: 15,
+      minWidth: 180,
+      justifyContent: 'center',
+    },
+    buttonLoading: {
+      backgroundColor: '#059669',
+    },
+    buttonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '700',
+      letterSpacing: 0.3,
+    },
+    loadingContainer: {
+      marginTop: 20,
+    },
+    loadingText: {
+      color: '#6B7280',
+      fontSize: 14,
+      fontWeight: '500',
+    },
+  });

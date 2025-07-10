@@ -1,45 +1,92 @@
+// app/tabs/_layout.tsx
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { tabNavigatorStyles } from '../../styles/screens_css/tabNavigatorStyles';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    <LinearGradient
+      colors={['#FFFFFF', '#F0FDF4', '#FFFFFF']}
+      style={tabNavigatorStyles.background}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: '#059669',
+          tabBarInactiveTintColor: '#9CA3AF',
+          tabBarStyle: tabNavigatorStyles.tabBar,
+          tabBarLabelStyle: tabNavigatorStyles.tabLabel,
+          tabBarItemStyle: tabNavigatorStyles.tabItem,
+          tabBarBackground: () => (
+            <LinearGradient
+              colors={['rgba(255,255,255,0.95)', 'rgba(240,253,244,0.95)']}
+              style={tabNavigatorStyles.tabBarBackground}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            />
+          ),
+          headerShown: false,
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons 
+                name={focused ? 'home' : 'home-outline'} 
+                size={24} 
+                color={color} 
+              />
+            ),
+          }}
+        />
+        
+        <Tabs.Screen
+          name="devices"
+          options={{
+            title: 'Devices',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons 
+                name={focused ? 'hardware-chip' : 'hardware-chip-outline'} 
+                size={24} 
+                color={color} 
+              />
+            ),
+          }}
+        />
+        
+        <Tabs.Screen
+          name="logs"
+          options={{
+            title: 'Logs',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons 
+                name={focused ? 'document-text' : 'document-text-outline'} 
+                size={24} 
+                color={color} 
+              />
+            ),
+          }}
+        />
+        
+        <Tabs.Screen
+          name="settings"
+          options={{
+            title: 'Settings',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons 
+                name={focused ? 'settings' : 'settings-outline'} 
+                size={24} 
+                color={color} 
+              />
+            ),
+          }}
+        />
+      </Tabs>
+    </LinearGradient>
   );
 }
+
