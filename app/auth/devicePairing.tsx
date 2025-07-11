@@ -207,7 +207,7 @@ export default function DevicePairingScreen() {
       }),
     ]).start(() => {
       // Pass data to finish screen
-      router.push({
+      router.replace({
         pathname: '/auth/finishSetup',
         params: { 
           ...params,
@@ -231,7 +231,7 @@ export default function DevicePairingScreen() {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      router.back();
+      router.replace('/auth/roomSetup');
     });
   };
 

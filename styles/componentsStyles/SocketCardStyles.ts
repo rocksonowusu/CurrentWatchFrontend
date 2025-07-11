@@ -33,7 +33,7 @@ export const socketCardStyles = StyleSheet.create({
       alignItems: 'flex-start',
     },
     deviceName: {
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: '600',
       color: '#1F2937',
       marginBottom: 8,

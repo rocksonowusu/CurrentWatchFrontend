@@ -154,7 +154,12 @@ export default function RoomSetupScreen() {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      router.back();
+      router.replace({
+        pathname: '/auth/alertSetup',
+        params: { 
+          phoneNumber: params.phoneNumber
+        }
+      });
     });
   };
 

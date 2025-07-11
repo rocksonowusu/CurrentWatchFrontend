@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -13,8 +15,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { settingsStyles } from '../../styles/screens_css/settingsStyle';
 
-const { height } = Dimensions.get("window");
 
 interface Device {
   id: string;
@@ -53,6 +55,8 @@ const SettingsScreen: React.FC = () => {
   });
   
   const [masterToggle, setMasterToggle] = useState(true);
+
+  const router = useRouter();
 
   const handleUpdatePhone = () => {
     setIsEditingPhone(false);
@@ -148,93 +152,102 @@ const SettingsScreen: React.FC = () => {
     );
   };
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      router.replace('/auth/intro');
+    } catch (error) {
+      Alert.alert('Logout Failed', 'An error occurred while logging out.');
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={settingsStyles.container}>
       <LinearGradient
         colors={['#FFFFFF', '#FFFFFF', '#FFFFFF']}
-        style={styles.background}
+        style={settingsStyles.background}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
         {/* Background decorative circles */}
-        <View style={styles.backgroundCircles}>
-          <View style={[styles.circle, styles.circle1]} />
-          <View style={[styles.circle, styles.circle2]} />
-          <View style={[styles.circle, styles.circle3]} />
+        <View style={settingsStyles.backgroundCircles}>
+          <View style={[settingsStyles.circle, settingsStyles.circle1]} />
+          <View style={[settingsStyles.circle, settingsStyles.circle2]} />
+          <View style={[settingsStyles.circle, settingsStyles.circle3]} />
         </View>
         
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={settingsStyles.safeArea}>
           <ScrollView 
-            style={styles.scrollView}
+            style={settingsStyles.scrollView}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={settingsStyles.scrollContent}
           >
-            <View style={styles.headerContainer}>
-              <Text style={styles.header}>Settings</Text>
-              <Text style={styles.subtitle}>Manage your account and settings.</Text>
+            <View style={settingsStyles.headerContainer}>
+              <Text style={settingsStyles.header}>Settings</Text>
+              <Text style={settingsStyles.subtitle}>Manage your account and settings.</Text>
             </View>
 
             {/* Active Alert Banner */}
             {activeAlert && (
-              <View style={styles.alertBanner}>
-                <View style={styles.alertContent}>
+              <View style={settingsStyles.alertBanner}>
+                <View style={settingsStyles.alertContent}>
                   <Ionicons name="warning" size={24} color="#fff" />
-                  <View style={styles.alertText}>
-                    <Text style={styles.alertMessage}>{activeAlert.message}</Text>
-                    <Text style={styles.alertTimestamp}>{activeAlert.timestamp}</Text>
+                  <View style={settingsStyles.alertText}>
+                    <Text style={settingsStyles.alertMessage}>{activeAlert.message}</Text>
+                    <Text style={settingsStyles.alertTimestamp}>{activeAlert.timestamp}</Text>
                   </View>
                 </View>
-                <TouchableOpacity onPress={handleDismissAlert} style={styles.dismissButton}>
+                <TouchableOpacity onPress={handleDismissAlert} style={settingsStyles.dismissButton}>
                   <Ionicons name="close" size={20} color="#fff" />
                 </TouchableOpacity>
               </View>
             )}
 
             {/* Redesigned User Info Card */}
-            <View style={styles.userCard}>
-              <View style={styles.profileSection}>
-                <View style={styles.profileImageContainer}>
+            <View style={settingsStyles.userCard}>
+              <View style={settingsStyles.profileSection}>
+                <View style={settingsStyles.profileImageContainer}>
                   <Ionicons name="person" size={32} color="#059669" />
                 </View>
-                <View style={styles.profileInfo}>
-                  <Text style={styles.userName}>John Doe</Text>
-                  <Text style={styles.userRole}>Account Owner</Text>
+                <View style={settingsStyles.profileInfo}>
+                  <Text style={settingsStyles.userName}>John Doe</Text>
+                  <Text style={settingsStyles.userRole}>Account Owner</Text>
                 </View>
               </View>
               
-              <View style={styles.userDetails}>
-                <View style={styles.detailRow}>
-                  <View style={styles.detailIcon}>
+              <View style={settingsStyles.userDetails}>
+                <View style={settingsStyles.detailRow}>
+                  <View style={settingsStyles.detailIcon}>
                     <Ionicons name="mail" size={16} color="#059669" />
                   </View>
-                  <View style={styles.detailContent}>
-                    <Text style={styles.detailLabel}>Email Address</Text>
-                    <Text style={styles.detailValue}>{userEmail}</Text>
+                  <View style={settingsStyles.detailContent}>
+                    <Text style={settingsStyles.detailLabel}>Email Address</Text>
+                    <Text style={settingsStyles.detailValue}>{userEmail}</Text>
                   </View>
                 </View>
                 
-                <View style={styles.detailRow}>
-                  <View style={styles.detailIcon}>
+                <View style={settingsStyles.detailRow}>
+                  <View style={settingsStyles.detailIcon}>
                     <Ionicons name="call" size={16} color="#059669" />
                   </View>
-                  <View style={styles.detailContent}>
-                    <Text style={styles.detailLabel}>Phone Number</Text>
+                  <View style={settingsStyles.detailContent}>
+                    <Text style={settingsStyles.detailLabel}>Phone Number</Text>
                     {isEditingPhone ? (
-                      <View style={styles.phoneEditContainer}>
+                      <View style={settingsStyles.phoneEditContainer}>
                         <TextInput
-                          style={styles.phoneInput}
+                          style={settingsStyles.phoneInput}
                           value={phoneNumber}
                           onChangeText={setPhoneNumber}
                           placeholder="Enter phone number"
                         />
-                        <TouchableOpacity onPress={handleUpdatePhone} style={styles.saveButton}>
+                        <TouchableOpacity onPress={handleUpdatePhone} style={settingsStyles.saveButton}>
                           <Ionicons name="checkmark" size={16} color="#fff" />
                         </TouchableOpacity>
                       </View>
                     ) : (
-                      <View style={styles.phoneContainer}>
-                        <Text style={styles.detailValue}>{phoneNumber}</Text>
-                        <TouchableOpacity onPress={() => setIsEditingPhone(true)} style={styles.editButton}>
+                      <View style={settingsStyles.phoneContainer}>
+                        <Text style={settingsStyles.detailValue}>{phoneNumber}</Text>
+                        <TouchableOpacity onPress={() => setIsEditingPhone(true)} style={settingsStyles.editButton}>
                           <Ionicons name="pencil" size={14} color="#059669" />
                         </TouchableOpacity>
                       </View>
@@ -245,17 +258,17 @@ const SettingsScreen: React.FC = () => {
             </View>
 
             {/* Collapsible Device Manager */}
-            <View style={styles.card}>
+            <View style={settingsStyles.card}>
               <TouchableOpacity
                 style={[
-                  styles.collapsibleHeader,
+                  settingsStyles.collapsibleHeader,
                   { paddingBottom: isDeviceManagerExpanded ? 16 : 0 }
                 ]}
                 onPress={() => setIsDeviceManagerExpanded(!isDeviceManagerExpanded)}
               >
-                <View style={styles.cardHeader}>
+                <View style={settingsStyles.cardHeader}>
                   <Ionicons name="hardware-chip" size={24} color="#059669" />
-                  <Text style={styles.cardTitle}>Device Manager</Text>
+                  <Text style={settingsStyles.cardTitle}>Device Manager</Text>
                 </View>
                 <Ionicons 
                   name={isDeviceManagerExpanded ? "chevron-up" : "chevron-down"} 
@@ -265,86 +278,86 @@ const SettingsScreen: React.FC = () => {
               </TouchableOpacity>
               
               {isDeviceManagerExpanded && (
-                <View style={styles.deviceContent}>
-                  <View style={styles.deviceList}>
+                <View style={settingsStyles.deviceContent}>
+                  <View style={settingsStyles.deviceList}>
                     {devices.map((device) => (
-                      <View key={device.id} style={styles.deviceItem}>
-                        <View style={styles.deviceInfo}>
-                          <Text style={styles.deviceName}>{device.name}</Text>
-                          <View style={styles.deviceStatus}>
+                      <View key={device.id} style={settingsStyles.deviceItem}>
+                        <View style={settingsStyles.deviceInfo}>
+                          <Text style={settingsStyles.deviceName}>{device.name}</Text>
+                          <View style={settingsStyles.deviceStatus}>
                             <View style={[
-                              styles.statusDot,
+                              settingsStyles.statusDot,
                               { backgroundColor: device.status === 'online' ? '#059669' : '#ef4444' }
                             ]} />
-                            <Text style={styles.statusText}>
+                            <Text style={settingsStyles.statusText}>
                               {device.status} • {device.currentUsage}A
                             </Text>
                           </View>
                         </View>
                         <TouchableOpacity
                           onPress={() => handleRemoveDevice(device.id, device.name)}
-                          style={styles.removeButton}
+                          style={settingsStyles.removeButton}
                         >
                           <Ionicons name="trash" size={16} color="#ef4444" />
                         </TouchableOpacity>
                       </View>
                     ))}
                   </View>
-                  <TouchableOpacity style={styles.addButton} onPress={handleAddDevice}>
+                  <TouchableOpacity style={settingsStyles.addButton} onPress={handleAddDevice}>
                     <Ionicons name="add" size={20} color="#fff" />
-                    <Text style={styles.addButtonText}>Add New Device</Text>
+                    <Text style={settingsStyles.addButtonText}>Add New Device</Text>
                   </TouchableOpacity>
                 </View>
               )}
             </View>
 
             {/* Threshold Settings */}
-            <View style={styles.card}>
-              <View style={styles.cardHeader}>
+            <View style={settingsStyles.card}>
+              <View style={settingsStyles.cardHeader}>
                 <Ionicons name="settings" size={24} color="#059669" />
-                <Text style={styles.cardTitle}>Threshold Settings</Text>
+                <Text style={settingsStyles.cardTitle}>Threshold Settings</Text>
               </View>
-              <View style={styles.thresholdSettings}>
-                <View style={styles.settingRow}>
-                  <Text style={styles.settingLabel}>Max Current per Socket (A)</Text>
+              <View style={settingsStyles.thresholdSettings}>
+                <View style={settingsStyles.settingRow}>
+                  <Text style={settingsStyles.settingLabel}>Max Current per Socket (A)</Text>
                   <TextInput
-                    style={styles.settingInput}
+                    style={settingsStyles.settingInput}
                     value={maxCurrentPerSocket.toString()}
                     onChangeText={(text) => setMaxCurrentPerSocket(parseInt(text) || 0)}
                     keyboardType="numeric"
                   />
                 </View>
-                <View style={styles.settingRow}>
-                  <Text style={styles.settingLabel}>Global Safety Threshold (%)</Text>
+                <View style={settingsStyles.settingRow}>
+                  <Text style={settingsStyles.settingLabel}>Global Safety Threshold (%)</Text>
                   <TextInput
-                    style={styles.settingInput}
+                    style={settingsStyles.settingInput}
                     value={globalSafetyThreshold.toString()}
                     onChangeText={(text) => setGlobalSafetyThreshold(parseInt(text) || 0)}
                     keyboardType="numeric"
                   />
                 </View>
-                <TouchableOpacity style={styles.resetButton} onPress={handleResetToDefaults}>
+                <TouchableOpacity style={settingsStyles.resetButton} onPress={handleResetToDefaults}>
                   <Ionicons name="refresh" size={16} color="#059669" />
-                  <Text style={styles.resetButtonText}>Reset to Defaults</Text>
+                  <Text style={settingsStyles.resetButtonText}>Reset to Defaults</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Emergency Section */}
-            <View style={styles.emergencyCard}>
-              <View style={styles.cardHeader}>
+            <View style={settingsStyles.emergencyCard}>
+              <View style={settingsStyles.cardHeader}>
                 <Ionicons name="warning" size={24} color="#ef4444" />
-                <Text style={[styles.cardTitle, styles.emergencyTitle]}>Emergency Controls</Text>
+                <Text style={[settingsStyles.cardTitle, settingsStyles.emergencyTitle]}>Emergency Controls</Text>
               </View>
-              <Text style={styles.emergencyWarning}>
+              <Text style={settingsStyles.emergencyWarning}>
                 ⚠️ Use only during system emergency
               </Text>
               
-              <View style={styles.emergencyControls}>
-                <View style={styles.masterToggleContainer}>
-                  <View style={styles.toggleInfo}>
-                    <Text style={styles.toggleLabel}>Master Power</Text>
-                    <Text style={styles.toggleDescription}>
+              <View style={settingsStyles.emergencyControls}>
+                <View style={settingsStyles.masterToggleContainer}>
+                  <View style={settingsStyles.toggleInfo}>
+                    <Text style={settingsStyles.toggleLabel}>Master Power</Text>
+                    <Text style={settingsStyles.toggleDescription}>
                       {masterToggle ? 'All devices enabled' : 'All devices disabled'}
                     </Text>
                   </View>
@@ -357,421 +370,33 @@ const SettingsScreen: React.FC = () => {
                 </View>
 
                 <TouchableOpacity
-                  style={styles.emergencyButton}
+                  style={settingsStyles.emergencyButton}
                   onPress={handleEmergencyShutdown}
                 >
                   <Ionicons name="power" size={20} color="#fff" />
-                  <Text style={styles.emergencyButtonText}>Turn Off All Devices</Text>
+                  <Text style={settingsStyles.emergencyButtonText}>Turn Off All Devices</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.emergencyButton, styles.resetSystemButton]}
+                  style={[settingsStyles.emergencyButton, settingsStyles.resetSystemButton]}
                   onPress={handleManualReset}
                 >
                   <Ionicons name="refresh-circle" size={20} color="#fff" />
-                  <Text style={styles.emergencyButtonText}>Manual System Reset</Text>
+                  <Text style={settingsStyles.emergencyButtonText}>Manual System Reset</Text>
                 </TouchableOpacity>
               </View>
             </View>
+            <TouchableOpacity style={settingsStyles.logoutButton} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={23} color="#000" />
+              <Text style={settingsStyles.logoutButtonText}>Logout</Text>
+            </TouchableOpacity>
           </ScrollView>
+          
+          
         </SafeAreaView>
       </LinearGradient>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  background: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 100, // Extra padding for floating tab bar
-  },
-  backgroundCircles: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
-  circle: {
-    position: 'absolute',
-    borderRadius: 1000,
-  },
-  circle1: {
-    width: 200,
-    height: 200,
-    top: -100,
-    right: -100,
-    backgroundColor: 'rgba(0, 201, 87, 0.08)',
-  },
-  circle2: {
-    width: 150,
-    height: 150,
-    bottom: -75,
-    left: -75,
-    backgroundColor: 'rgba(16, 185, 129, 0.06)',
-  },
-  circle3: {
-    width: 100,
-    height: 100,
-    top: height * 0.3,
-    left: -50,
-    backgroundColor: 'rgba(34, 197, 94, 0.05)',
-  },
-  alertBanner: {
-    backgroundColor: '#ef4444',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerContainer: {
-    paddingTop: 20,
-    paddingBottom: 8,
-    backgroundColor: 'transparent',
-    zIndex: 2,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#1F2937',
-    marginBottom: 0,
-    letterSpacing: 0,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  alertContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  alertText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  alertMessage: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  alertTimestamp: {
-    color: '#fff',
-    fontSize: 12,
-    opacity: 0.8,
-    marginTop: 2,
-  },
-  dismissButton: {
-    padding: 4,
-  },
-  // Redesigned User Card Styles
-  userCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  profileSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  profileImageContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#f0fdf4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-    borderWidth: 2,
-    borderColor: '#dcfce7',
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1f2937',
-    marginBottom: 2,
-  },
-  userRole: {
-    fontSize: 14,
-    color: '#059669',
-    fontWeight: '500',
-  },
-  userDetails: {
-    gap: 16,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  detailIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#f0fdf4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  detailContent: {
-    flex: 1,
-  },
-  detailLabel: {
-    fontSize: 12,
-    color: '#6b7280',
-    fontWeight: '500',
-    marginBottom: 4,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  detailValue: {
-    fontSize: 14,
-    color: '#1f2937',
-    fontWeight: '500',
-  },
-  phoneEditContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  phoneInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 14,
-    marginRight: 8,
-  },
-  saveButton: {
-    backgroundColor: '#059669',
-    borderRadius: 6,
-    padding: 8,
-  },
-  phoneContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  editButton: {
-    marginLeft: 8,
-    padding: 4,
-  },
-  // Regular card styles (with elevation removed from user card)
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  collapsibleHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginLeft: 8,
-  },
-  deviceContent: {
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-    paddingTop: 16,
-  },
-  deviceList: {
-    gap: 12,
-  },
-  deviceItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#f9fafb',
-    borderRadius: 8,
-  },
-  deviceInfo: {
-    flex: 1,
-  },
-  deviceName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1f2937',
-  },
-  deviceStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 8,
-  },
-  statusText: {
-    fontSize: 12,
-    color: '#6b7280',
-  },
-  removeButton: {
-    padding: 8,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#059669',
-    borderRadius: 8,
-    padding: 16,
-    marginTop: 12,
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-  thresholdSettings: {
-    gap: 16,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  settingLabel: {
-    fontSize: 14,
-    color: '#1f2937',
-    fontWeight: '500',
-    flex: 1,
-  },
-  settingInput: {
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 14,
-    width: 80,
-    textAlign: 'center',
-  },
-  resetButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#059669',
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  resetButtonText: {
-    color: '#059669',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-  emergencyCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 32,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    borderWidth: 2,
-    borderColor: '#fef2f2',
-  },
-  emergencyTitle: {
-    color: '#ef4444',
-  },
-  emergencyWarning: {
-    fontSize: 14,
-    color: '#ef4444',
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 16,
-    padding: 12,
-    backgroundColor: '#fef2f2',
-    borderRadius: 6,
-  },
-  emergencyControls: {
-    gap: 16,
-  },
-  masterToggleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    backgroundColor: '#f9fafb',
-    borderRadius: 8,
-  },
-  toggleInfo: {
-    flex: 1,
-  },
-  toggleLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
-  },
-  toggleDescription: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 2,
-  },
-  emergencyButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ef4444',
-    borderRadius: 8,
-    padding: 16,
-  },
-  resetSystemButton: {
-    backgroundColor: '#dc2626',
-  },
-  emergencyButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-});
 
 export default SettingsScreen;

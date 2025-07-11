@@ -119,7 +119,7 @@ export default function AlertSetupScreen() {
       }),
     ]).start(() => {
       // Pass data to next screen
-      router.push({
+      router.replace({
         pathname: '/auth/roomSetup',
         params: { 
           ...params,
@@ -143,7 +143,13 @@ export default function AlertSetupScreen() {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      router.back();
+      router.replace({
+        pathname: '/auth/userInfo',
+        params: {
+          fullName: params.fullName,
+          email: params.email
+        }
+      });
     });
   };
 

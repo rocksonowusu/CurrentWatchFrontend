@@ -3,16 +3,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
-import { finishSetupStyles } from '../../styles/auth_css/finishSetup';
 import {
-    Animated,
-    Dimensions,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Animated,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { finishSetupStyles } from '../../styles/auth_css/finishSetup';
 
 const { width, height } = Dimensions.get('window');
 
@@ -68,6 +67,24 @@ export default function FinishSetupScreen() {
     });
   };
 
+  const handleBack = () => {
+    setIsLoading(true);
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 50,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      router.replace('/auth/devicePairing');
+    });
+  };
+
   return (
     <LinearGradient
       colors={['#FFFFFF', '#F8FFF9', '#FFFFFF']}
@@ -104,6 +121,14 @@ export default function FinishSetupScreen() {
             },
           ]}
         >
+          <TouchableOpacity
+            style={finishSetupStyles.backButton}
+            onPress={handleBack}
+            disabled={isLoading}
+          >
+            <Ionicons name="arrow-back" size={24} color="#1F2937" />
+          </TouchableOpacity>
+          <Text style={finishSetupStyles.headerTitle}>Setup Complete</Text>
           <Text style={finishSetupStyles.stepIndicator}>6 of 6</Text>
         </Animated.View>
 

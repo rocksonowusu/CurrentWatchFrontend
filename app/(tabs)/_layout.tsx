@@ -6,12 +6,12 @@ import { tabNavigatorStyles } from '../../styles/screens_css/tabNavigatorStyles'
 
 export default function TabsLayout() {
   return (
-    <LinearGradient
-      colors={['#FFFFFF', '#F0FDF4', '#FFFFFF']}
-      style={tabNavigatorStyles.background}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
+    // <LinearGradient
+    //   colors={['#FFFFFF', '#F0FDF4', '#FFFFFF']}
+    //   style={tabNavigatorStyles.background}
+    //   start={{ x: 0, y: 0 }}
+    //   end={{ x: 1, y: 1 }}
+    // >
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: '#059669',
@@ -86,7 +86,7 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-    </LinearGradient>
+    // </LinearGradient>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import DeviceDetailModal from '../../components/devices/DeviceDetailModal';
 import LightFanCard from '../../components/devices/LightFanCard';
 import SocketCard from '../../components/devices/SocketCard';
@@ -105,58 +105,63 @@ export default function RoomDetailScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{roomName}</Text>
-      <View style={styles.summaryRow}>
-        <Text style={styles.summaryText}>Devices On: {onCount} / {devices.length}</Text>
-        <Text style={styles.summaryText}>Total Current: {totalCurrent.toFixed(1)} A</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.title}>{roomName}</Text>
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryText}>Devices On: {onCount} / {devices.length}</Text>
+          <Text style={styles.summaryText}>Total Current: {totalCurrent.toFixed(1)} A</Text>
+        </View>
+        <ScrollView
+          style={styles.cardsList}
+          contentContainerStyle={{ paddingTop: 8, paddingBottom: 64 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {devices.map((device: Device) => (
+            device.type === 'socket' ? (
+              <SocketCard
+                key={device.id}
+                name={device.name}
+                current={device.current ?? 0}
+                isOn={device.isOn}
+                onPress={() => handleCardPress(device)}
+                onToggle={() => handleToggleDevice(device.id)} // Now actually toggles the device
+              />
+            ) : (
+              <LightFanCard
+                key={device.id}
+                name={device.name}
+                type={device.type}
+                isOn={device.isOn}
+                onPress={() => handleCardPress(device)}
+              />
+            )
+          ))}
+        </ScrollView>
+        <DeviceDetailModal
+          device={selectedDevice}
+          visible={modalVisible}
+          onClose={handleModalClose}
+          onToggle={handleModalToggle} // Now properly handles toggle from modal
+        />
       </View>
-      <ScrollView
-        style={styles.cardsList}
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 64 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {devices.map((device: Device) => (
-          device.type === 'socket' ? (
-            <SocketCard
-              key={device.id}
-              name={device.name}
-              current={device.current ?? 0}
-              isOn={device.isOn}
-              onPress={() => handleCardPress(device)}
-              onToggle={() => handleToggleDevice(device.id)} // Now actually toggles the device
-            />
-          ) : (
-            <LightFanCard
-              key={device.id}
-              name={device.name}
-              type={device.type}
-              isOn={device.isOn}
-              onToggle={() => handleToggleDevice(device.id)} // Now actually toggles the device
-              onPress={() => handleCardPress(device)}
-            />
-          )
-        ))}
-      </ScrollView>
-      <DeviceDetailModal
-        device={selectedDevice}
-        visible={modalVisible}
-        onClose={handleModalClose}
-        onToggle={handleModalToggle} // Now properly handles toggle from modal
-      />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 16,
-    paddingTop: 32,
+    paddingTop: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: '700',
     color: '#1F2937',
     marginBottom: 8,

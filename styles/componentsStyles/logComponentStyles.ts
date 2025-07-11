@@ -7,7 +7,7 @@ export const logComponentStyles = StyleSheet.create({
   marginBottom: 8,
 },
 summaryHeader: {
-  marginVertical:30,
+  paddingVertical:20,
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'flex-start',
@@ -17,7 +17,7 @@ summaryTitle: {
   fontSize: 20,
   fontWeight: '700',
   color: '#1F2937',
-  marginBottom: 0,
+  paddingBottom: 0,
 },
 summarySubtitle: {
   fontSize: 14,
@@ -68,6 +68,7 @@ criticalCard: {
   elevation: 1,
   borderWidth: 1,
   borderColor: '#F3F4F6',
+  paddingTop:10
 },
 criticalIcon: {
   fontSize: 24,

@@ -36,7 +36,7 @@ export const deviceStyles = StyleSheet.create({
       backgroundColor: 'rgba(34, 197, 94, 0.05)',
     },
     headerContainer: {
-      paddingTop: 30,
+      paddingVertical: 60,
       paddingHorizontal: 24,
       paddingBottom: 8,
       backgroundColor: 'transparent',

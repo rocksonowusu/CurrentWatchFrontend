@@ -9,7 +9,7 @@ import LogsList from '../../components/logs/LogList';
 import EmptyState from '../../components/logs/EmptyState';
 import { Log, FilterType, DateFilterType } from '../../types/logs';
 import { logsStyles } from '../../styles/screens_css/logsstyles';
-
+import TestAlertButton from '../../components/logs/TestAlertButton'
 // Sample log data
 const SAMPLE_LOGS: Log[] = [
   {
@@ -147,8 +147,9 @@ export default function LogsScreen(): React.ReactElement {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={logsStyles.scrollContent}
           >
+           
             <LogSummary data={summaryData} />
-            
+            <TestAlertButton />
             <LogFilter
               selectedRoom={selectedRoom}
               selectedType={selectedType}

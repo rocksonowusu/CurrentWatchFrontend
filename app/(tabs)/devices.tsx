@@ -12,16 +12,17 @@ export default function Devices() {
         <View style={[deviceStyles.circle, deviceStyles.circle3]} />
       </View>
       {/* Fixed Header */}
-      <View style={deviceStyles.headerContainer}>
-        <Text style={deviceStyles.header}>Devices</Text>
-        <Text style={deviceStyles.subtitle}>Manage and monitor all your connected devices by room.</Text>
-      </View>
+      
       {/* Scrollable Room List */}
       <ScrollView
         style={deviceStyles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={deviceStyles.scrollContent}
       >
+        <View style={deviceStyles.headerContainer}>
+          <Text style={deviceStyles.header}>Devices</Text>
+          <Text style={deviceStyles.subtitle}>Manage and monitor all your connected devices by room.</Text>
+        </View>
         <RoomSection roomName="Living Room" />
         <RoomSection roomName="Bedroom" />
         <RoomSection roomName="Kitchen" />

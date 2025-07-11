@@ -105,7 +105,7 @@ export default function UserInfoScreen() {
       }),
     ]).start(() => {
       // Pass user data to next screen
-      router.push({
+      router.replace({
         pathname: '/auth/alertSetup',
         params: { fullName, email }
       });
@@ -126,7 +126,7 @@ export default function UserInfoScreen() {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      router.back();
+      router.replace('/auth/intro');
     });
   };
 
