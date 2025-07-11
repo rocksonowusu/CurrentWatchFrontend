@@ -1,17 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef } from 'react';
 import {
-    Animated,
-    Dimensions,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View,
+  Animated,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View
 } from 'react-native';
 import { Alert, AlertType, useAlert } from '../../hooks/AlertContext';
 import { alertNotificationStyle } from '../../styles/componentsStyles/alertNotificationStyle';
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const { width: screenWidth } = Dimensions.get('window');
 
