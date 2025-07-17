@@ -1,5 +1,5 @@
 // app/auth/devicePairing.tsx
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -19,14 +19,17 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import api from '@/utils/api';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+
 
 const { width, height } = Dimensions.get('window');
 
 // Device types
 const deviceTypes = [
-  { id: 'socket', name: 'Socket', icon: 'plug-outline' },
-  { id: 'light', name: 'Light', icon: 'bulb-outline' },
-  { id: 'fan', name: 'Fan', icon: 'leaf-outline' },
+  { id: 'socket', name: 'Socket', icon: 'plug-circle-check' },
+  { id: 'light', name: 'Light', icon: 'lightbulb' },
+  { id: 'fan', name: 'Fan', icon: 'fan' },
 ];
 
 interface Room {
@@ -60,11 +63,21 @@ export default function DevicePairingScreen() {
   });
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [isPairing, setIsPairing] = useState(false);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
   // Animation refs
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() =>{
+    (
+      async () => {
+        const {status} = await BarCodeScanner.requestPermissionsAsync();
+        setHasPermission(status === 'granted');
+      }
+    )();
+  },[]);
 
   useEffect(() => {
     // Parse rooms from params
@@ -148,42 +161,86 @@ export default function DevicePairingScreen() {
     }, 2000);
   };
 
+  const submitPairingToBackend = async () =>{
+    setIsLoading(true)
+
+    try {
+      const payload = {
+        full_name: params.full_name,
+        email:params.email,
+        phone_number:params.phone_number,
+        system_id: params.system_id,
+        rooms: rooms.map((room)=>{
+          const roomDevices = devices.filter((d)=>d.roomId === room.id && d.status === 'paired')
+          return{
+            name:room.name,
+            icon:room.icon,
+            devices:roomDevices.map((d)=>({
+              name: d.name,
+              type: d.type,
+              device_id: d.deviceId
+            }))
+          };
+        }).filter((room)=>room.devices.length > 0)
+      };
+      console.log("Sending pairing payload", JSON.stringify(payload,null,2));
+      const response = await api.post('/onboarding/device-pairing/', payload);
+      console.log("Backend response:", response.data);
+
+      //Navigate to finish screen
+      router.replace({
+        pathname:'/auth/finishSetup',
+        params: {
+          ...params,
+          devices: JSON.stringify(devices)
+        }
+      })
+    }catch (err) {
+      console.error('Pairing failed', err);
+      Alert.alert("Pairing failed", "Something went wrong while saving your devices. Please try again");
+    } finally{
+      setIsLoading(false);
+    }
+  };
+
+
   const handleQRScan = () => {
-    // Simulate QR scan
-    setShowQRScanner(false);
-    const mockDeviceId = `CW${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
-    setNewDevice(prev => ({ ...prev, deviceId: mockDeviceId }));
+    if (hasPermission === false){
+      Alert.alert('Camera Access Denied!', 'Please enable camera access in settings to scan QR codes');
+      return;
+    }
+    setShowQRScanner(true);
   };
 
-  const handleContinue = () => {
-    const pairedDevices = devices.filter(d => d.status === 'paired');
+    const handleContinue = () => {
+      const pairedDevices = devices.filter(d => d.status === 'paired');
     
-    if (devices.length === 0) {
-      Alert.alert(
-        'No Devices Added',
-        'You can add devices later from the app settings. Continue to finish setup?',
-        [
-          { text: 'Add Devices', style: 'cancel' },
-          { text: 'Continue', onPress: proceedToFinish }
-        ]
-      );
-      return;
-    }
-
-    if (pairedDevices.length === 0) {
-      Alert.alert(
-        'No Devices Paired',
-        'None of your devices are successfully paired. You can retry pairing or continue to finish setup.',
-        [
-          { text: 'Retry All', onPress: retryAllDevices },
-          { text: 'Continue Anyway', onPress: proceedToFinish }
-        ]
-      );
-      return;
-    }
-
-    proceedToFinish();
-  };
+      if (devices.length === 0) {
+        Alert.alert(
+          'No Devices Added',
+          'You can add devices later from the app settings. Continue to finish setup?',
+          [
+            { text: 'Add Devices', style: 'cancel' },
+            { text: 'Continue', onPress: proceedToFinish }
+          ]
+        );
+        return;
+      }
+    
+      if (pairedDevices.length === 0) {
+        Alert.alert(
+          'No Devices Paired',
+          'None of your devices are successfully paired. You can retry pairing or continue to finish setup.',
+          [
+            { text: 'Retry All', onPress: retryAllDevices },
+            { text: 'Continue Anyway', onPress: proceedToFinish }
+          ]
+        );
+        return;
+      }
+      submitPairingToBackend();
+    };
+  
 
   const retryAllDevices = () => {
     const failedDevices = devices.filter(d => d.status === 'failed');
@@ -380,7 +437,7 @@ export default function DevicePairingScreen() {
                           <View key={device.id} style={devicePairingStyles.deviceItem}>
                             <View style={devicePairingStyles.deviceInfo}>
                               <View style={devicePairingStyles.deviceIconContainer}>
-                                <Ionicons 
+                                <FontAwesome6 
                                   name={getDeviceTypeIcon(device.type) as any} 
                                   size={24} 
                                   color="#6B7280" 
@@ -394,7 +451,7 @@ export default function DevicePairingScreen() {
                             
                             <View style={devicePairingStyles.deviceActions}>
                               <View style={[devicePairingStyles.statusIndicator, { backgroundColor: getStatusColor(device.status) }]}>
-                                <Ionicons 
+                                <Ionicons
                                   name={getStatusIcon(device.status) as any} 
                                   size={16} 
                                   color="#FFFFFF" 
@@ -541,7 +598,7 @@ export default function DevicePairingScreen() {
                     ]}
                     onPress={() => setNewDevice(prev => ({ ...prev, type: type.id }))}
                   >
-                    <Ionicons 
+                    <FontAwesome6 
                       name={type.icon as any} 
                       size={24} 
                       color={newDevice.type === type.id ? '#FFFFFF' : '#6B7280'} 
@@ -574,7 +631,7 @@ export default function DevicePairingScreen() {
                 </View>
                 <TouchableOpacity
                   style={devicePairingStyles.qrButton}
-                  onPress={() => setShowQRScanner(true)}
+                  onPress={handleQRScan}
                 >
                   <Ionicons name="qr-code-outline" size={20} color="#10B981" />
                 </TouchableOpacity>
@@ -608,41 +665,35 @@ export default function DevicePairingScreen() {
 
       {/* QR Scanner Modal */}
       <Modal
-        visible={showQRScanner}
-        animationType="slide"
-        presentationStyle="fullScreen"
-        onRequestClose={() => setShowQRScanner(false)}
-      >
-        <SafeAreaView style={devicePairingStyles.qrContainer}>
-          <View style={devicePairingStyles.qrHeader}>
-            <Text style={devicePairingStyles.qrTitle}>Scan QR Code</Text>
-            <TouchableOpacity
-              style={devicePairingStyles.qrCloseButton}
-              onPress={() => setShowQRScanner(false)}
-            >
-              <Ionicons name="close" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-          
-            <View style={devicePairingStyles.qrContent}>
-            <View style={devicePairingStyles.qrFrame}>
-              <View style={devicePairingStyles.qrCorner} />
-              <View style={[devicePairingStyles.qrCorner, devicePairingStyles.qrCornerTopRight]} />
-              <View style={[devicePairingStyles.qrCorner, devicePairingStyles.qrCornerBottomLeft]} />
-              <View style={[devicePairingStyles.qrCorner, devicePairingStyles.qrCornerBottomRight]} />
+          visible={showQRScanner}
+          animationType="slide"
+          presentationStyle="fullScreen"
+          onRequestClose={() => setShowQRScanner(false)}
+        >
+          <SafeAreaView style={devicePairingStyles.qrContainer}>
+            <View style={devicePairingStyles.qrHeader}>
+              <Text style={devicePairingStyles.qrTitle}>Scan QR Code</Text>
+              <TouchableOpacity
+                style={devicePairingStyles.qrCloseButton}
+                onPress={() => setShowQRScanner(false)}
+              >
+                <Ionicons name="close" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
             </View>
+
+            <BarCodeScanner
+              onBarCodeScanned={({ data }) => {
+                setShowQRScanner(false);
+                setNewDevice(prev => ({ ...prev, deviceId: data.toUpperCase() }));
+              }}
+              style={{ flex: 1 }}
+            />
+
             <Text style={devicePairingStyles.qrInstructions}>
               Position the QR code within the frame
             </Text>
-            <TouchableOpacity
-              style={devicePairingStyles.qrScanButton}
-              onPress={handleQRScan}
-            >
-              <Text style={devicePairingStyles.qrScanButtonText}>Simulate Scan</Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </Modal>
+          </SafeAreaView>
+        </Modal>
     </LinearGradient>
   );
 }

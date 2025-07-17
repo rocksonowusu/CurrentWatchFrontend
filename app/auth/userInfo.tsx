@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TextInput } from 'react-native';
+import api from '../../utils/api';
 
 const { width, height } = Dimensions.get('window');
 
@@ -58,7 +59,7 @@ export default function UserInfoScreen() {
     return emailRegex.test(email);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     let newErrors = { fullName: '', email: '' };
     let hasErrors = false;
 
@@ -91,25 +92,37 @@ export default function UserInfoScreen() {
 
     setIsLoading(true);
 
-    // Exit animation before navigation
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: -50,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      // Pass user data to next screen
-      router.replace({
-        pathname: '/auth/alertSetup',
-        params: { fullName, email }
+    try{
+
+      const response = await api.post('onboarding/start/',{
+        full_name:fullName,
+        email:email
       });
-    });
+
+      console.log("Backend response:", response.data)
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: -50,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        // Pass user data to next screen
+        router.replace({
+          pathname: '/auth/alertSetup',
+          params: { fullName, email }
+        });
+      });
+    } catch (error:any){
+      console.error('Backend error', error.response?.data || error.message)
+      Alert.alert('Error', 'Failed to save your info. Please try again')
+      setIsLoading(false);
+    }
   };
 
   const handleBack = () => {

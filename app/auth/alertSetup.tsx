@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TextInput } from 'react-native';
+import { submitPhoneNumber } from '../../utils/api';
 
 const { width, height } = Dimensions.get('window');
 
@@ -85,7 +86,7 @@ export default function AlertSetupScreen() {
     }, 2000);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     let newErrors = { phoneNumber: '' };
     let hasErrors = false;
 
@@ -106,27 +107,34 @@ export default function AlertSetupScreen() {
     setIsLoading(true);
 
     // Exit animation before navigation
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: -50,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      // Pass data to next screen
-      router.replace({
-        pathname: '/auth/roomSetup',
-        params: { 
-          ...params,
-          phoneNumber 
-        }
+    try{
+      await submitPhoneNumber(params.email as string, phoneNumber);
+
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: -50,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        // Pass data to next screen
+        router.replace({
+          pathname: '/auth/roomSetup',
+          params: { 
+            email: params.email,
+            phoneNumber 
+          }
+        });
       });
-    });
+    }catch(err:any){
+      Alert.alert('Verification Failed', err.message || 'Something went wrong.');
+      setIsLoading(false);
+    }
   };
 
   const handleBack = () => {

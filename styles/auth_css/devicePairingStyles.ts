@@ -370,9 +370,11 @@ export const devicePairingStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
     gap: 10,
+    flex: 1, // Add this line
   },
   input: {
     flex: 1,
+    minWidth: 0, // Add this line
     fontSize: 16,
     color: '#1F2937',
   },
@@ -412,6 +414,7 @@ export const devicePairingStyles = StyleSheet.create({
   deviceIdContainer: {
     flexDirection: 'row',
     gap: 10,
+    width: '100%', // Add this line
   },
   qrButton: {
     width: 50,

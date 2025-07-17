@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs } from 'expo-router';
 import { tabNavigatorStyles } from '../../styles/screens_css/tabNavigatorStyles';
 
+
 export default function TabsLayout() {
   return (
     // <LinearGradient

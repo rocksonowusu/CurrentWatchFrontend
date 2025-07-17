@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import api from '../../utils/api'
 
 const { width, height } = Dimensions.get('window');
 
@@ -106,7 +107,7 @@ export default function RoomSetupScreen() {
     setRooms(prevRooms => prevRooms.filter(room => room.id !== roomId));
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     const selectedRooms = rooms.filter(room => room.selected);
     
     if (selectedRooms.length === 0) {
@@ -116,28 +117,42 @@ export default function RoomSetupScreen() {
 
     setIsLoading(true);
 
-    // Exit animation before navigation
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: -50,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      // Pass data to next screen
-      router.push({
-        pathname: '/auth/devicePairing',
-        params: { 
-          ...params,
-          rooms: JSON.stringify(selectedRooms)
-        }
+    try{
+      const payload = {
+        email:params.email,
+        rooms: JSON.stringify(selectedRooms)
+      };
+      console.log('Sending rooms to backend:', payload);
+      const response = await api.post('onboarding/room-setup/', payload)
+      console.log('Backend response:', response.data)
+
+      
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: -50,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        // Pass data to next screen
+        router.push({
+          pathname: '/auth/devicePairing',
+          params: { 
+            ...params,
+            rooms: JSON.stringify(selectedRooms)
+          }
+        });
       });
-    });
+    } catch (error:any){
+      console.error('Room setup error:', error.message);
+      Alert.alert('Room Setup Failed', 'Could not send room data to the server.');
+      setIsLoading(false);
+    }
   };
 
   const handleBack = () => {
